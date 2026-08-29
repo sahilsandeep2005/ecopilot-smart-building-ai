@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Virtual environment
+.venv/
+venv/
+
+# Secrets / local config
+.env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+
+# Runtime EcoPilot data
+data/*
+!data/.gitkeep
+
+results/
+
+# EnergyPlus generated outputs
+outputs/
+*.eso
+*.eio
+*.err
+*.mtr
+*.audit
+*.rdd
+*.mdd
+*.edd
+*.end
+*.shd
+*.sqlite
+*.sqlite3
+
+# ML/cache outputs
+*.joblib
+
+# OS
+.DS_Store
+Thumbs.db
