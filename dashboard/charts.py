@@ -284,23 +284,96 @@ def action_status_chart(actions: list[dict[str, Any]]) -> go.Figure:
         return _empty_figure("No agent actions recorded", height=300)
 
     counts: dict[str, int] = {}
+
     for action in actions:
         status = str(action.get("status", "unknown")).title()
         counts[status] = counts.get(status, 0) + 1
 
+    labels = list(counts.keys())
+    values = list(counts.values())
+    total = sum(values)
+
+    display_text = []
+
+    for value in values:
+        percentage = (value / total) * 100 if total else 0
+
+        if percentage >= 5:
+            display_text.append(f"{percentage:.1f}%")
+        else:
+            display_text.append("")
+
+    legend_labels = [
+        f"{label} ({value})"
+        for label, value in zip(labels, values)
+    ]
+
     figure = go.Figure(
         go.Pie(
-            labels=list(counts.keys()),
+            labels=legend_labels,
+            values=values,
             hole=0.67,
-            textfont=dict(color="#dbeafe", size=11),
-            marker=dict(colors=[COLORS["teal"], COLORS["controlled"], COLORS["amber"], COLORS["red"], COLORS["purple"]]),
-            hovertemplate="%{label}: %{value}<extra></extra>",
+
+            text=display_text,
+            textinfo="text",
+            textposition="inside",
+
+            textfont=dict(
+                color="#f8fafc",
+                size=12
+            ),
+
+            marker=dict(
+                colors=[
+                    COLORS["amber"],
+                    COLORS["teal"],
+                    COLORS["controlled"],
+                    COLORS["red"],
+                    COLORS["purple"],
+                ]
+            ),
+
+            hovertemplate=(
+                "%{label}<br>"
+                "Events: %{value}<br>"
+                "%{percent}"
+                "<extra></extra>"
+            ),
         )
     )
-    figure.add_annotation(text=f"<b>{sum(counts.values())}</b><br><span style='font-size:11px'>ACTIONS</span>", x=.5, y=.5, showarrow=False, font=dict(color="#f8fafc", size=18))
-    figure.update_layout(showlegend=False)
-    return _base_layout(figure, height=300)
 
+    figure.add_annotation(
+        text=(
+            f"<b>{total}</b><br>"
+            "<span style='font-size:11px'>ACTION EVENTS</span>"
+        ),
+        x=0.5,
+        y=0.5,
+        showarrow=False,
+        font=dict(
+            color="#f8fafc",
+            size=18
+        ),
+    )
+
+    figure.update_layout(
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="center",
+            x=0.5
+        ),
+        margin=dict(
+            l=20,
+            r=20,
+            t=70,
+            b=20
+        ),
+    )
+
+    return _base_layout(figure, height=320)
 
 def savings_gauge(value: float) -> go.Figure:
     import math
