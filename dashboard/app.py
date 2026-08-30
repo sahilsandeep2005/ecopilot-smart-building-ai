@@ -13,7 +13,7 @@ from dashboard.charts import (
     demand_comparison_chart,
     energy_comparison_chart,
     operation_context_chart,
-    savings_gauge,
+    savings_gauge,  
     states_to_frame,
     zone_co2_chart,
     zone_temperature_chart,
@@ -159,7 +159,7 @@ if not baseline_states and not controlled_states:
     )
 
 # Executive KPI strip
-kpi_columns = st.columns(6)
+kpi_columns = st.columns(5)
 with kpi_columns[0]:
     render_kpi(
         "Energy saving",
@@ -187,16 +187,8 @@ with kpi_columns[2]:
         "green" if comfort >= 95 else "amber",
         "good" if comfort >= 95 else "warn",
     )
+
 with kpi_columns[3]:
-    render_kpi(
-        "IAQ compliance",
-        "N/A" if co2_compliance is None else f"{co2_compliance:.1f}%",
-        "CO₂ signal status",
-        "◎",
-        "purple" if co2_compliance is not None else "amber",
-        "good" if co2_compliance is not None and co2_compliance >= 95 else "warn",
-    )
-with kpi_columns[4]:
     render_kpi(
         "Validated actions",
         str(int(metrics.get("applied_actions", 0) or 0)),
@@ -205,7 +197,7 @@ with kpi_columns[4]:
         "purple",
         "good",
     )
-with kpi_columns[5]:
+with kpi_columns[4]:
     render_kpi(
         "System health",
         health_status,
